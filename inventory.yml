@@ -1,9 +1,9 @@
 [windows_servers]
-TES-POCOWRDSDEV-01
+192.168.124.128
 
 [windows_servers:vars]
-ansible_user=rmontagut_admin
-ansible_password=
+ansible_user=ansible
+ansible_password=Ansible5537!
 ansible_connection=winrm
 ansible_winrm_transport=ntlm
 ansible_winrm_server_cert_validation=ignore
