@@ -1,0 +1,7 @@
+---
+- name: Exemple de tâche pour Windows
+  hosts: windows_servers
+  tasks:
+    - name: Exécuter une commande PowerShell sur Windows
+      win_shell: Get-Process
+
