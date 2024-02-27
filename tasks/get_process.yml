@@ -1,7 +1,11 @@
 ---
-- name: Exemple de tâche pour Windows
+- name: Get process information
   hosts: windows_servers
   tasks:
-    - name: Exécuter une commande PowerShell sur Windows
-      win_shell: Get-Process
+    - name: Get process information
+      shell: ps -e -o pid,ppid,cmd,%mem,%cpu --sort=-%mem | head -n 10
+      register: process_info
 
+    - name: Display process information
+      debug:
+        msg: "{{ process_info.stdout_lines }}"

@@ -1,0 +1,8 @@
+- name: Getting process IDs of the process
+  community.general.pids:
+    name: chrome
+  register: pids_of_chrome
+
+- name: Printing the process IDs obtained
+  ansible.builtin.debug:
+    msg: "PIDS of chrome: {{ pids_of_chrome.pids | join(',') }}"

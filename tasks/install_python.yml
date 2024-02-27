@@ -1,0 +1,8 @@
+---
+- name: Install Python on Windows host
+  hosts: windows_servers
+  tasks:
+    - name: Install Python using Chocolatey
+      win_chocolatey:
+        name: python
+        state: present
