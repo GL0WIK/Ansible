@@ -1,0 +1,12 @@
+---
+- name: Check PowerShell version
+  hosts: windows_servers
+  gather_facts: no
+  tasks:
+    - name: Get PowerShell version
+      win_shell: "$PSVersionTable.PSVersion"
+      register: ps_version_output
+
+    - name: Display PowerShell version
+      debug:
+        var: ps_version_output.stdout_lines

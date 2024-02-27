@@ -1,0 +1,13 @@
+---
+- name: Get RevoUn.exe processes
+  hosts: windows_servers
+  tasks:
+    - name: Get RevoUn.exe processes
+      ansible.windows.win_command: Get-Process | Where-Object {$_.ProcessName -eq "RevoUn" -and $_.Path -like "{{ folder_path }}\\*"} | Select-Object Id, ProcessName, Path
+      register: revo_processes
+      vars:
+        folder_path: "{{ folder_path | regex_replace('\\\\', '\\\\\\\\') }}"  # Utilisation de regex_replace pour échapper les backslashes
+    
+    - name: Display RevoUn.exe processes
+      debug:
+        msg: "{{ revo_processes.stdout_lines }}"
