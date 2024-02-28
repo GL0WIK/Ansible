@@ -1,0 +1,12 @@
+---
+- name: Check Pid
+  hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: Read process ID using awk
+      command: "awk '$4 == \"C:\\\\Users\\\\ansible\\\\Desktop\\\\Version_1\\\\RevoUn.exe\" {print $3}' /home/ansible/tmp/output.txt"
+      register: process_id_output
+
+    - name: Display process ID
+      debug:
+        var: process_id_output.stdout

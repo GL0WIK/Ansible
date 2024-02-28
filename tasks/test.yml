@@ -1,13 +1,38 @@
 ---
-- name: Get RevoUn.exe processes
+- name: Check Pid
   hosts: windows_servers
+  gather_facts: no
   tasks:
-    - name: Get RevoUn.exe processes
-      ansible.windows.win_command: Get-Process | Where-Object {$_.ProcessName -eq "RevoUn" -and $_.Path -like "{{ folder_path }}\\*"} | Select-Object Id, ProcessName, Path
-      register: revo_processes
-      vars:
-        folder_path: "{{ folder_path | regex_replace('\\\\', '\\\\\\\\') }}"  # Utilisation de regex_replace pour échapper les backslashes
-    
-    - name: Display RevoUn.exe processes
+    - name: Get Name, Id, Path of "RevoUn" process
+      win_shell: 'Get-Process | Where-Object {$_.ProcessName -like "RevoUn"} | Select-Object Name, Id, Path'
+      register: ps_version_output
+
+    - name: Display results
       debug:
-        msg: "{{ revo_processes.stdout_lines }}"
+        var: ps_version_output.stdout_lines
+
+    - name: Write result to a file
+      copy:
+        content: "{{ ps_version_output.stdout_lines | join('\n') }}"
+        dest: "C:\\Users\\ansible\\Desktop\\output.txt"
+
+- name: Read output.txt and display PID of process with specific path
+  hosts: localhost  # Assuming you want to run this task on the Ansible control node
+  gather_facts: no
+  tasks:
+    - name: Read output.txt
+      slurp:
+        src: "C:\\Users\\ansible\\Desktop\\output.txt"
+      register: output_file
+
+    - name: Extract content from output.txt
+      set_fact:
+        file_content: "{{ output_file['content'] | b64decode }}"
+
+    - name: Get PID of process with specific path
+      win_shell: 'Get-Content "{{ file_content }}" | Where-Object { $_ -match "C:\\Users\\ansible\\Desktop\\Version_2\\RevoUn.exe" } | ForEach-Object { $_.Split()[1] }'
+      register: pid_output
+
+    - name: Display PID
+      debug:
+        var: pid_output.stdout

@@ -1,0 +1,18 @@
+---
+- name: Check Pid
+  hosts: windows_servers
+  gather_facts: no
+  tasks:
+    - name: Get Name, Id, Path of "RevoUn" process
+      win_shell: 'Get-Process | Where-Object {$_.ProcessName -like "RevoUn"} | Select-Object Name, Id, Path'
+      register: ps_version_output
+
+    - name: Display results
+      debug:
+        var: ps_version_output.stdout_lines
+
+    - name: Write result to a file on localhost
+      local_action: copy
+      args:
+        content: "{{ ps_version_output.stdout_lines | join('\n') }}"
+        dest: "/home/ansible/tmp/output.txt"
