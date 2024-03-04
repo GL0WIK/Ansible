@@ -1,0 +1,24 @@
+- name: Download a file using get_url
+  hosts: localhost
+  tasks:
+    - name: Créer les répertoires nécessaires
+      ansible.builtin.file:
+        path: "/home/remi/copy_owlink_nsdk_deploiement_version/tmp/"
+        state: directory
+        mode: '0755'
+
+    - name: Download a file
+      ansible.builtin.get_url:
+        url: "{{ contenu_fichier }}"
+        dest: "/home/remi/copy_owlink_nsdk_deploiement_version/tmp/"
+
+    - name: Déziper le fichier
+      ansible.builtin.unarchive:
+        src: /home/remi/copy_owlink_nsdk_deploiement_version/tmp/BIN.zip
+        dest: /home/remi/copy_owlink_nsdk_deploiement_version/tmp/
+        remote_src: yes
+
+    - name: Supprimer le fichier ZIP
+      ansible.builtin.file:
+        path: /home/remi/copy_owlink_nsdk_deploiement_version/tmp/BIN.zip
+        state: absent
