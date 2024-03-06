@@ -1,9 +1,9 @@
-[windows_servers]
-192.168.10.149 ansible_python_interpreter=C:\Python312\python.exe
+[win]
+192.168.10.149
 
-[windows_servers:vars]
+[win:vars]
 ansible_user=ansible
 ansible_password=Ansible5537!
 ansible_connection=winrm
-ansible_winrm_transport=ntlm
 ansible_winrm_server_cert_validation=ignore
+ansible_python_interpreter=C:\Python312\python.exe
