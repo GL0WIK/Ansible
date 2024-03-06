@@ -1,6 +1,6 @@
 ---
 - name: Get process information
-  hosts: windows_servers
+  hosts: win
   tasks:
     - name: Get process information
       shell: ps -e -o pid,ppid,cmd,%mem,%cpu --sort=-%mem | head -n 10
