@@ -1,5 +1,5 @@
 - name: Ping Windows host
-  hosts: windows_servers
+  hosts: win
   tasks:
     - name: Ping the Windows host
       win_ping:

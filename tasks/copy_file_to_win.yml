@@ -1,0 +1,14 @@
+---
+- name: Copier un dossier depuis le nœud de contrôle vers une machine Windows
+  hosts: win
+  tasks:
+    - name: Copier le dossier depuis le nœud de contrôle vers la machine Windows
+      win_copy:
+        src: /home/ansible/BIN.zip
+        dest: C:\Users\ansible\Desktop\tmp
+
+    - name: Extraire le fichier ZIP
+      community.windows.win_unzip:
+        src: C:\Users\ansible\Desktop\tmp\BIN.zip
+        dest: C:\Destination_folder
+        delete_archive: yes
