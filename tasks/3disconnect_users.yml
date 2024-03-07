@@ -1,0 +1,21 @@
+- name: Envoyer un message d'avertissement aux utilisateurs
+  hosts: win
+  tasks:
+    - name: Envoyer un message d'avertissement
+      win_shell: |
+        $message = "Une montée de version de Owlink est prévue dans 5 minutes. Passé ce délai, vous serez déconnectés d>        MSG * /server:$env:COMPUTERNAME $message
+      async: 0
+      poll: 0
+
+    - name: Get list of connected sessions
+      win_shell: quser
+      register: connected_sessions
+      
+    - name: Print connected sessions
+      debug:
+        msg: "{{ connected_sessions.stdout_lines }}"
+
+    - name: Parcourir la liste des utilisateurs et les déconnecter
+      win_shell: logoff {{ item.split()[2] }}
+      loop: "{{ connected_sessions.stdout_lines[1:] }}"
+      when: item.split()[2] != ansible_user_id

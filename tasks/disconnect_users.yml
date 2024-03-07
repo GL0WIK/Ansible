@@ -1,0 +1,27 @@
+- name: Envoyer un message d'avertissement aux utilisateurs
+  hosts: win
+  tasks:
+    - name: Envoyer un message d'avertissement
+      win_shell: |
+        $message = "Une montée de version de Owlink est prévue dans 5 minutes. Passé ce délai, vous serez déconnectés de force. Veuillez donc enregistrer votre travail avant de vous déconnecter proprement du serveur."
+        MSG * /server:$env:COMPUTERNAME $message
+      async: 0
+      poll: 0
+
+    - name: Obtenir la liste des utilisateurs connectés
+      win_shell: $qusers = quser | Where-Object { $_ -notmatch $env:USERNAME } | Select-Object -Skip 1
+      register: quser_output
+
+    - name: Afficher la liste des utilisateurs
+      debug:
+        var: quser_output.stdout_lines[1:]
+
+    - name: Attendre 5 minutes
+      win_shell: Start-Sleep -Seconds 30
+      async: 0
+      poll: 0
+
+    - name: Parcourir la liste des utilisateurs et les déconnecter
+      win_shell: logoff {{ item.split()[2] }}
+      loop: "{{ quser_output.stdout_lines[1:] }}"
+      when: item.split()[2] != ansible_user_id

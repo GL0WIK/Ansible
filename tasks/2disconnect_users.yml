@@ -1,0 +1,10 @@
+- name: List connected sessions on Windows Server
+  hosts: win
+  tasks:
+    - name: Get list of connected sessions
+      win_shell: quser
+      register: connected_sessions
+      
+    - name: Print connected sessions
+      debug:
+        msg: "{{ connected_sessions.stdout_lines }}"
